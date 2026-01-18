@@ -8,14 +8,17 @@ import '../bloc/stream_event.dart';
 import '../bloc/stream_state.dart';
 
 class LiveStreamPage extends StatefulWidget {
-  const LiveStreamPage({super.key});
+  final RTCVideoRenderer renderer;
+  final WebRtcSimulator simulator;
+
+  const LiveStreamPage({super.key, required this.renderer,required this.simulator});
 
   @override
   State<LiveStreamPage> createState() => _LiveStreamPageState();
 }
 
 class _LiveStreamPageState extends State<LiveStreamPage> {
-  final RTCVideoRenderer _renderer = RTCVideoRenderer();
+  RTCVideoRenderer get _renderer => widget.renderer;
 
   @override
   void initState() {
@@ -33,7 +36,7 @@ class _LiveStreamPageState extends State<LiveStreamPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          StreamBloc(WebRtcSimulator(), _renderer),
+          StreamBloc(widget.simulator, _renderer),
       child: Scaffold(
         appBar: AppBar(title: const Text('Live Stream')),
         body: BlocBuilder<StreamBloc, StreamState>(

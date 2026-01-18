@@ -7,8 +7,12 @@ import 'image_picker_state.dart';
 
 class ImagePickerBloc
     extends Bloc<ImagePickerEvent, ImagePickerState> {
-  final ImagePicker _picker = ImagePicker();
+   ImagePicker _picker = ImagePicker();
   final List<PickedImage> _images = [];
+
+  setMockPicker(value){
+    _picker = value;
+  }
 
   ImagePickerBloc() : super(ImagePickerInitial([])) {
     on<PickImageFromCamera>(_pickFromCamera);
@@ -38,10 +42,20 @@ class ImagePickerBloc
     }
     emit(ImagePickerLoaded(List.from(_images)));
   }
+  //
+  // void _removeImage(RemovePickedImage event, Emitter emit) {
+  //   _images.removeAt(event.index);
+  //   emit(ImagePickerLoaded(List.from(_images)));
+  // }
 
   void _removeImage(RemovePickedImage event, Emitter emit) {
-    _images.removeAt(event.index);
-    emit(ImagePickerLoaded(List.from(_images)));
+    if (event.index >= 0 && event.index < _images.length) {
+      _images.removeAt(event.index);
+      emit(ImagePickerLoaded(List.from(_images)));
+    } else {
+      // Optionally emit error state or ignore
+      emit(ImagePickerUploadFailed('Invalid index: ${event.index}'));
+    }
   }
   Future<void> _onUploadImages(
       UploadImages event,

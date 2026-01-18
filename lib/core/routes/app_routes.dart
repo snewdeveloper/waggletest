@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:waggltest/features/live_stream/presentation/pages/live_stream_page.dart';
+import 'package:waggltest/features/live_stream/services/webrtc_simulator.dart';
 import 'package:waggltest/features/location/presentation/pages/location_page.dart';
 import 'package:waggltest/features/onboarding/presentation/pages/qr_scan_page.dart';
 import '../../features/tasks/presentation/pages/task_page.dart';
@@ -16,7 +18,7 @@ class AppRoutes {
       case RouteNames.scanAndConnect:
         return MaterialPageRoute(builder: (_) => const QrScanPage());
       case RouteNames.webrtc:
-        return MaterialPageRoute(builder: (_) => const LiveStreamPage());
+        return MaterialPageRoute(builder: (_) =>  LiveStreamPage(renderer: RTCVideoRenderer(),simulator: WebRtcSimulator(),));
       case RouteNames.location:
         return MaterialPageRoute(builder: (_) => const LocationPage());
       default:

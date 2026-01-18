@@ -29,6 +29,8 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - permission_handler_apple (9.3.0):
+    - Flutter
   - safe_device (1.0.0):
     - DTTJailbreakDetection
     - Flutter
@@ -50,6 +52,7 @@ DEPENDENCIES:
   - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - safe_device (from `.symlinks/plugins/safe_device/ios`)
   - wifi_iot (from `.symlinks/plugins/wifi_iot/ios`)
 
@@ -85,6 +88,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   safe_device:
     :path: ".symlinks/plugins/safe_device/ios"
   wifi_iot:
@@ -105,10 +110,11 @@ SPEC CHECKSUMS:
   network_info_plus: cf61925ab5205dce05a4f0895989afdb6aade5fc
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
+  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   safe_device: 205ad04de30f4512ca889418d4783e1b6fdf8cfe
   WebRTC-SDK: 40d4f5ba05cadff14e4db5614aec402a633f007e
   wifi_iot: f645260a2be8608517b2a9bf4c39b98e97003acc
 
-PODFILE CHECKSUM: f0831f933c914013b00cc7aa4795c78eb09789e0
+PODFILE CHECKSUM: f244855145586b515a830a1434e3bc426c974c73
 
 COCOAPODS: 1.16.2

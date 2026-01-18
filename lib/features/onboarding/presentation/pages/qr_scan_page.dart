@@ -24,34 +24,30 @@ class QrScanPage extends StatefulWidget {
 }
 
 class _QrScanPageState extends State<QrScanPage> {
-
   @override
   void initState() {
-    // TODO: implement initState
-    if(mounted){
-      context.read<QrBloc>().add( ClearPreviousScan());
-    }
     super.initState();
+    // Clear any previous scan results when the page is initialized.
+    if (mounted) {
+      context.read<QrBloc>().add(ClearPreviousScan());
+      context.read<WifiBloc>().add(ClearPreviousWifiState());
+    }
   }
+
   final ImagePicker _picker = ImagePicker();
-  String? extractedValue;
 
   Future<void> _scanFromGallery(BuildContext context) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
     if (image == null) return;
 
     final controller = MobileScannerController();
     final result = await controller.analyzeImage(image.path);
 
-    if (result?.barcodes.isNotEmpty == false) {
-      _showError('No QR code found in image');
-      return;
-    }
-    if (result != null) {
-      print(result);
+    if (result != null && result.barcodes.isNotEmpty) {
       BarcodeLogger.log(result);
       context.read<QrBloc>().add(QrScanned(result));
+    } else {
+      _showError('No QR code found in the selected image.');
     }
   }
 
@@ -61,7 +57,6 @@ class _QrScanPageState extends State<QrScanPage> {
       MaterialPageRoute(builder: (_) => const QrCameraPage()),
     );
     if (result != null) {
-      print(result);
       BarcodeLogger.log(result);
       context.read<QrBloc>().add(QrScanned(result));
     }
@@ -77,10 +72,19 @@ class _QrScanPageState extends State<QrScanPage> {
       appBar: AppBar(title: const Text('Scan Device QR')),
       body: BlocListener<QrBloc, QrState>(
         listener: (context, state) {
+          // Handle side-effects, like triggering other blocs or showing dialogs.
           if (state is QrScanSuccess) {
-            QrDetailsView(capture: state.capture);
-          }
-          if (state is QrScanFailure) {
+            final rawValue = state.capture.barcodes.first.rawValue;
+            if (rawValue != null) {
+              final wifiDevice = QrParser.parse(rawValue);
+              if (wifiDevice != null) {
+                // If the QR is a WiFi credential, dispatch an event to the WifiBloc.
+                context
+                    .read<WifiBloc>()
+                    .add(ConnectToWifi(wifiDevice.ssid, wifiDevice.password));
+              }
+            }
+          } else if (state is QrScanFailure) {
             _showError(state.message);
           }
         },
@@ -90,74 +94,47 @@ class _QrScanPageState extends State<QrScanPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                /// 📸 Camera
                 ElevatedButton.icon(
                   icon: const Icon(Icons.camera_alt),
                   label: const Text('Scan via Camera'),
                   onPressed: () => _openCameraScanner(context),
                 ),
-
                 const SizedBox(height: 12),
-
-                /// 🖼 Gallery
                 ElevatedButton.icon(
                   icon: const Icon(Icons.photo),
                   label: const Text('Scan via Gallery'),
                   onPressed: () => _scanFromGallery(context),
                 ),
-
                 const SizedBox(height: 24),
 
-                /// 📄 Scan Result
+                // This builder is now only responsible for showing the UI for the QR scan result.
                 BlocBuilder<QrBloc, QrState>(
                   builder: (context, state) {
                     if (state is QrScanSuccess) {
-                      final raw = state.capture.barcodes.first.rawValue;
-                      print("raw---$raw");
-                      if (raw != null) {
-                        var wifi = QrParser.parse(raw);
-                        print("wifi parsed--$wifi");
-
-                        if (wifi != null) {
-                          print("wifi not null");
-                          context.read<WifiBloc>().add(
-                            ConnectToWifi(wifi.ssid, wifi.password),
-                          );
-                          print("ConnectToWifi called");
-                        }
-                      }
                       return QrDetailsView(capture: state.capture);
                     }
-
                     return const Center(
                       child: Text(
-                        'Scan a device_connection QR to see details',
+                        'Scan a device QR to see details',
                         style: TextStyle(color: Colors.grey),
                       ),
                     );
                   },
                 ),
 
-                SizedBox(height: 45),
+                const SizedBox(height: 45),
+
+                // This consumer handles the UI and side-effects for the WiFi connection process.
                 BlocConsumer<WifiBloc, WifiState>(
                   listener: (context, state) {
                     if (state is WifiConnected) {
                       Fluttertoast.showToast(
                         msg: '✅ Connected to ${state.device.ssid}',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
                       );
-                    }
-
-                    if (state is WifiError) {
+                    } else if (state is WifiError) {
                       Fluttertoast.showToast(
-                        msg: state.message,
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
+                        msg: '❌ ${state.message}',
                         backgroundColor: Colors.red,
-                        textColor: Colors.white,
                       );
                     }
                   },
@@ -165,11 +142,9 @@ class _QrScanPageState extends State<QrScanPage> {
                     if (state is WifiConnecting) {
                       return const Center(child: CircularProgressIndicator());
                     }
-
                     if (state is WifiConnected) {
                       return WifiStatusWidget(device: state.device);
                     }
-
                     return const SizedBox.shrink();
                   },
                 ),

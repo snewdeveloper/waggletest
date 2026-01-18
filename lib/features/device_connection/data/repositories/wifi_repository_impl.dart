@@ -83,7 +83,7 @@ class WifiRepositoryImpl implements WifiRepository {
 // import 'package:network_info_plus/network_info_plus.dart';
 // import 'package:wifi_iot/wifi_iot.dart';
 //
-// import '../../domain/entity/wifi_device.dart';
+// import '../../domain/entities/wifi_device.dart';
 // import '../../domain/repositories/wifi_repository.dart';
 //
 //

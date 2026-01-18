@@ -20,5 +20,9 @@ class WifiBloc extends Bloc<WifiEvent, WifiState> {
         emit(WifiError(e.toString()));
       }
     });
+    on<ClearPreviousWifiState>((event, emit) {
+      emit(WifiInitial());
+    });
+
   }
 }

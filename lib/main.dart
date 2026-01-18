@@ -11,10 +11,18 @@ import 'core/permissions/location_permission_handler.dart';
 import 'core/routes/app_routes.dart';
 import 'core/routes/route_names.dart';
 import 'core/services/background_location_initializer.dart';
+import 'core/services/location_permissions.dart';
+import 'core/services/location_service.dart';
+import 'features/location/data/repositories/location_repository_impl.dart';
+import 'features/location/domain/usecases/get_location_updates.dart';
+import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/onboarding/presentation/pages/qr_scan_page.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+
+  await LocationPermissions.request();
+  await LocationService.start(); // 🔴 IMPORTANT
 
   runApp(const MyApp());
 }
@@ -32,6 +40,11 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ImagePickerBloc>(
           create: (context) => ImagePickerBloc(),
+        ),
+        BlocProvider(
+          create: (_) => LocationBloc(
+            GetLocationUpdates(LocationRepositoryImpl()),
+          ),
         ),
       ],
       child: MaterialApp(

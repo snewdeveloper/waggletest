@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waggltest/features/live_stream/presentation/pages/live_stream_page.dart';
 import 'package:waggltest/features/onboarding/presentation/pages/qr_scan_page.dart';
 import '../../features/tasks/presentation/pages/task_page.dart';
 import '../../features/image_picker/presentation/pages/image_picker_page.dart';
@@ -13,6 +14,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const ImagePickerPage());
       case RouteNames.scanAndConnect:
         return MaterialPageRoute(builder: (_) => const QrScanPage());
+      case RouteNames.webrtc:
+        return MaterialPageRoute(builder: (_) => const LiveStreamPage());
         default:
         return MaterialPageRoute(
           builder: (_) =>

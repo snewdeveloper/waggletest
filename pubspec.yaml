@@ -48,6 +48,7 @@ dependencies:
   flutter_background_service_android: ^6.3.1
   dartz: ^0.10.1
   equatable: ^2.0.8
+  flutter_webrtc: ^1.2.1
 
 dev_dependencies:
   flutter_test:

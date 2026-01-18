@@ -24,6 +24,15 @@ class QrScanPage extends StatefulWidget {
 }
 
 class _QrScanPageState extends State<QrScanPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    if(mounted){
+      context.read<QrBloc>().add( ClearPreviousScan());
+    }
+    super.initState();
+  }
   final ImagePicker _picker = ImagePicker();
   String? extractedValue;
 

@@ -4,6 +4,8 @@ abstract class QrEvent {}
 
 class QrScanStarted extends QrEvent {}
 
+class ClearPreviousScan extends QrEvent{}
+
 class QrScanned extends QrEvent {
   final BarcodeCapture capture;
   QrScanned(this.capture);

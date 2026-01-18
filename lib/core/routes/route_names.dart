@@ -3,4 +3,5 @@ class RouteNames {
   static const imagePicker = '/image-picker';
   static const scanAndConnect = '/scan-and-connect';
   static const location = '/location';
+  static const webrtc = '/webrtc';
 }

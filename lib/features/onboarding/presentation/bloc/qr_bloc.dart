@@ -8,6 +8,9 @@ class QrBloc extends Bloc<QrEvent, QrState> {
     on<QrScanStarted>((event, emit) {
       emit(QrScanning());
     });
+    on<ClearPreviousScan>((event, emit) {
+      emit(QrInitial());
+    });
     on<QrScanned>((event, emit) {
       if (event.capture.barcodes.isEmpty) {
         emit(QrScanFailure("No QR detected"));

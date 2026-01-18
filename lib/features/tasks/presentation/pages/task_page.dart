@@ -28,6 +28,11 @@ class TaskPage extends StatelessWidget {
                   Navigator.pushNamed(context, RouteNames.location),
               child: const Text('Location Tracking'),
             ),
+            ElevatedButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, RouteNames.webrtc),
+              child: const Text('WEB Rtc'),
+            ),
           ],
         ),
       ),
